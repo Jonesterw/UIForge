@@ -26,7 +26,7 @@ Understanding the project's architecture is key to contributing effectively. Her
 5.  **Activate Previews:**
     *   For **simple CSS-based effects**, the HTML and CSS from `effects.json` are injected directly into the card's preview area, making them instantly interactive on hover.
     *   For **complex JavaScript-based effects** (like React or WebGL), `embed-controller.js` attaches listeners. On hover, it loads the necessary scripts and starts the animation; on mouse leave, it stops them to save resources.
-6.  **User Interaction:** The user can now hover over cards to see effects, click buttons to view the source code (HTML, CSS, JS, etc.), and copy code snippets to their clipboard.
+6.  **Explore and Learn:** The gallery is now live. Users can hover over any card to see the effect in action. By hovering over the "HTML", "CSS", or "JS" buttons, they can view the source code in a floating panel and use the "Copy Code" button to grab the snippet and experiment with it on their own.
 
 ### Core Architectural Files
 
@@ -78,8 +78,5 @@ The MIT License allows anyone to view, learn from, copy, and contribute freely. 
 
 ## Links
 
--   **GitHub Repo** – Contribute on GitHub!
--   ## Live Demo
-
-Check out the gallery live here: [Web Art Museum](https://jonesterw.github.io/WebArt-Gallery/)
-
+-   **GitHub Repo**: [Jonesterw/WebArt-Gallery](https://github.com/Jonesterw/WebArt-Gallery)
+-   **Live Demo**: [Web Art Museum](https://jonesterw.github.io/WebArt-Gallery/)

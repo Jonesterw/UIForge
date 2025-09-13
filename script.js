@@ -6,7 +6,7 @@
 async function fetchEffects(){
   try{
     const res = await fetch('effects.json');
-    if(!res.ok) throw new Error('Failed to load effects.json');
+    if(!res.ok) throw new Error('failed to fetch effects');
     return await res.json();
   }catch(e){console.error(e);return []}
 }
@@ -39,21 +39,24 @@ function createCard(effect){
   const codeBlock = node.querySelector('.code-block');
   const copyBtn = node.querySelector('.copy-code');
   const langButtons = node.querySelectorAll('[data-lang]');
+  const actionsContainer = node.querySelector('.card-actions');
   let currentLang = null;
+  let hideTimer = null; // Timer to add a delay before hiding
 
-  function setCode(lang) {
-    codeDisplay.hidden = false;
+  function showCode(lang) {
+    // If a hide action is pending, cancel it
+    if (hideTimer) {
+      clearTimeout(hideTimer);
+      hideTimer = null;
+    }
     currentLang = lang;
     codeBlock.textContent = effect[lang] || '';
-    langButtons.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
+    codeDisplay.classList.add('visible');
   }
 
   function hideCode() {
-    codeDisplay.hidden = true;
     currentLang = null;
-    langButtons.forEach(btn => btn.classList.remove('active'));
+    codeDisplay.classList.remove('visible');
   }
 
   langButtons.forEach(btn => {
@@ -61,13 +64,24 @@ function createCard(effect){
     if (!effect[lang]) {
       btn.disabled = true;
     } else {
-      btn.addEventListener('click', () => {
-        if (currentLang === lang) {
-          hideCode();
-        } else {
-          setCode(lang);
-        }
+      btn.addEventListener('mouseenter', () => {
+        showCode(lang);
       });
+    }
+  });
+
+  // When leaving the entire actions area, start a timer to hide the popover
+  actionsContainer.addEventListener('mouseleave', () => {
+    hideTimer = setTimeout(() => {
+      hideCode();
+    }, 300); // 300ms delay gives the user time to move to the popover
+  });
+
+  // If the user moves back into the actions area (including the popover), cancel the hide timer
+  actionsContainer.addEventListener('mouseenter', () => {
+    if (hideTimer) {
+      clearTimeout(hideTimer);
+      hideTimer = null;
     }
   });
 

@@ -9,7 +9,7 @@
     "tags": ["css", "hover", "animation"],
     "explanation": "This effect uses CSS transitions to smoothly change the opacity and scale of the box when you hover over it.",
     "html": "<div class=\"fade-box\">Hover Me</div>",
-    "css": ".fade-box{width:200px;height:100px;background-color:#f06;color:white;display:flex;justify-content:center;align-items:center;font-family:sans-serif;cursor:pointer;opacity:0.7;transition:opacity .5s ease,transform .3s ease}.fade-box:hover{opacity:1;transform:scale(1.1)}"
+    "css": ".fade-box {\n  width: 200px;\n  height: 100px;\n  background-color: #f06;\n  color: white;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-family: sans-serif;\n  cursor: pointer;\n  opacity: 0.7;\n  transition: opacity .5s ease, transform .3s ease;\n}\n\n.fade-box:hover {\n  opacity: 1;\n  transform: scale(1.1);\n}"
   },
   {
     "id": "pulse-box-effect",
@@ -21,7 +21,7 @@
     "tags": ["css", "animation", "pulse"],
     "explanation": "This effect uses a CSS keyframe animation to create a pulsing color change effect.",
     "html": "<div class=\"pulse-box\">Pulsing...</div>",
-    "css": ".pulse-box{width:250px;height:150px;display:flex;justify-content:center;align-items:center;font-family:sans-serif;color:white;background-color:#f06;border-radius:12px;animation:pulse 2s infinite alternate}@keyframes pulse{0%{background-color:#f06}50%{background-color:#f39}100%{background-color:#f06}}"
+    "css": ".pulse-box {\n  width: 250px;\n  height: 150px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-family: sans-serif;\n  color: white;\n  background-color: #f06;\n  border-radius: 12px;\n  animation: pulse 2s infinite alternate;\n}\n\n@keyframes pulse {\n  0% { background-color: #f06; }\n  50% { background-color: #f39; }\n  100% { background-color: #f06; }\n}"
   },
   {
     "id": "glow-text-effect",
@@ -33,7 +33,7 @@
     "tags": ["css", "hover", "text-effect", "glow"],
     "explanation": "This uses the CSS text-shadow property to create a glowing effect around the text, which intensifies on hover.",
     "html": "<div class=\"glow-text\">Glow</div>",
-    "css": ".glow-text{font-family:sans-serif;font-size:48px;color:#fff;text-align:center;text-shadow:0 0 5px #f06,0 0 10px #f06,0 0 20px #f39;transition:text-shadow .3s ease}.glow-text:hover{text-shadow:0 0 10px #f39,0 0 20px #f06,0 0 30px #f0f}"
+    "css": ".glow-text {\n  font-family: sans-serif;\n  font-size: 48px;\n  color: #fff;\n  text-align: center;\n  text-shadow: 0 0 5px #f06, 0 0 10px #f06, 0 0 20px #f39;\n  transition: text-shadow .3s ease;\n}\n\n.glow-text:hover {\n  text-shadow: 0 0 10px #f39, 0 0 20px #f06, 0 0 30px #f0f;\n}"
   },
   {
     "id": "pressed-button-effect",
@@ -45,7 +45,7 @@
     "tags": ["css", "button", "interaction", "active"],
     "explanation": "This uses the :active pseudo-class to change the button's transform and box-shadow, creating a satisfying press effect.",
     "html": "<button class=\"pressed-btn\">Press Me</button>",
-    "css": ".pressed-btn{padding:15px 30px;font-size:16px;background-color:#06f;color:white;border:none;border-radius:8px;cursor:pointer;box-shadow:0 5px #0044aa;transition:all .2s ease}.pressed-btn:active{transform:translateY(5px);box-shadow:0 2px #0044aa}"
+    "css": ".pressed-btn {\n  padding: 15px 30px;\n  font-size: 16px;\n  background-color: #06f;\n  color: white;\n  border: none;\n  border-radius: 8px;\n  cursor: pointer;\n  box-shadow: 0 5px #0044aa;\n  transition: all .2s ease;\n}\n\n.pressed-btn:active {\n  transform: translateY(5px);\n  box-shadow: 0 2px #0044aa;\n}"
   },
   {
     "id": "3d-lift-card-effect",
@@ -57,6 +57,31 @@
     "tags": ["css", "hover", "3d", "transform"],
     "explanation": "This effect uses CSS 3D transforms and perspective to create a card that appears to lift off the page on hover.",
     "html": "<div class=\"scene\"><div class=\"card\">3D Lift</div></div>",
-    "css": ".scene{display:flex;justify-content:center;align-items:center;perspective:800px}.card{width:200px;height:120px;background-color:#f06;color:white;display:flex;justify-content:center;align-items:center;border-radius:12px;box-shadow:0 10px 20px rgba(0,0,0,.4);transition:transform .4s ease,box-shadow .4s ease;transform-style:preserve-3d}.card:hover{transform:translateZ(30px) rotateX(10deg) rotateY(10deg) scale(1.05);box-shadow:0 20px 30px rgba(0,0,0,.6)}"
+    "css": ".scene {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  perspective: 800px;\n}\n\n.card {\n  width: 200px;\n  height: 120px;\n  background-color: #f06;\n  color: white;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  border-radius: 12px;\n  box-shadow: 0 10px 20px rgba(0,0,0,.4);\n  transition: transform .4s ease, box-shadow .4s ease;\n  transform-style: preserve-3d;\n}\n\n.card:hover {\n  transform: translateZ(30px) rotateX(10deg) rotateY(10deg) scale(1.05);\n  box-shadow: 0 20px 30px rgba(0,0,0,.6);\n}"
+  },
+  {
+    "id": "cursor-particle-trail",
+    "title": "Cursor Particle Trail",
+    "category": "js",
+    "description": "A canvas-based particle trail that follows the cursor's movement inside the card.",
+    "author": "Jonesterw",
+    "link": "effects/js/cursor-particle-trail/index.html",
+    "tags": ["js", "canvas", "interaction", "particles"],
+    "explanation": "This effect uses an HTML5 Canvas and a JavaScript animation loop (requestAnimationFrame) to draw particles at the cursor's position, creating a trailing effect. The animation only runs on hover via the embed-controller.",
+    "html": "<div class=\"gallery-wrap\"><canvas id=\"particle-canvas\"></canvas></div>",
+    "css": ".gallery-wrap {\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n\n#particle-canvas {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}",
+    "js": "function initParticleTrail(container) {\n  // ... logic for mouse tracking and particle animation ...\n}"
+  },
+  {
+    "id": "glitch-text-effect",
+    "title": "Glitch Text",
+    "category": "css",
+    "description": "A CSS-only text effect that creates a digital glitching and distortion illusion.",
+    "author": "Jonesterw",
+    "link": "#",
+    "tags": ["css", "animation", "text-effect", "glitch"],
+    "explanation": "This effect uses two pseudo-elements (::before and ::after) as copies of the text. A keyframe animation rapidly changes the `clip-path` of these pseudo-elements, revealing different slices of them with colored text-shadows to create the glitch illusion.",
+    "html": "<div class=\"glitch\" data-text=\"GLITCH\">GLITCH</div>",
+    "css": ".glitch {\n  position: relative;\n  font-size: 60px;\n  font-weight: bold;\n  color: #fff;\n  font-family: 'Courier New', Courier, monospace;\n}\n\n.glitch::before,\n.glitch::after {\n  content: attr(data-text);\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: #0f1720;\n  overflow: hidden;\n}\n\n.glitch::before {\n  left: 2px;\n  text-shadow: -1px 0 red;\n  animation: glitch-anim 2s infinite linear alternate-reverse;\n}\n\n.glitch::after {\n  left: -2px;\n  text-shadow: -1px 0 blue;\n  animation: glitch-anim-2 2s infinite linear alternate-reverse;\n}\n\n@keyframes glitch-anim {\n  0% { clip-path: inset(45% 0 50% 0); }\n  20% { clip-path: inset(50% 0 20% 0); }\n  40% { clip-path: inset(20% 0 70% 0); }\n  60% { clip-path: inset(70% 0 10% 0); }\n  80% { clip-path: inset(10% 0 40% 0); }\n  100% { clip-path: inset(45% 0 50% 0); }\n}\n\n@keyframes glitch-anim-2 {\n  0% { clip-path: inset(2% 0 90% 0); }\n  20% { clip-path: inset(90% 0 5% 0); }\n  40% { clip-path: inset(40% 0 45% 0); }\n  60% { clip-path: inset(80% 0 10% 0); }\n  80% { clip-path: inset(5% 0 70% 0); }\n  100% { clip-path: inset(2% 0 90% 0); }\n}"
   }
 ]

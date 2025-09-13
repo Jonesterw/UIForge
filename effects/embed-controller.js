@@ -87,6 +87,19 @@
       ensure(){ loadStyleOnce('effects/radiant-hover-cards/style.css'); return Promise.resolve(); },
       start(container){ /* CSS-only effect lives in styles */ },
       stop(container){}
+    },
+    'cursor-particle-trail': {
+      ensure(){
+        loadStyleOnce('effects/js/cursor-particle-trail/style.css');
+        return loadScriptOnce('effects/js/cursor-particle-trail/script.js');
+      },
+      start(container){
+        if (typeof global.initParticleTrail === 'function') {
+          const destroy = global.initParticleTrail(container);
+          container._effectDestroy = destroy || null;
+        }
+      },
+      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
     }
   };
 
@@ -101,12 +114,12 @@
     cards.forEach(card => {
       const id = card.getAttribute('data-effect');
       if(!registry[id]) return;
-      let mounted = false;
-      const container = card.querySelector('.demo') || card; // `.demo` area optional
+      // The container for the effect is the preview area, or a .demo div, or the card itself as a fallback.
+      const container = card.querySelector('.card-preview') || card.querySelector('.demo') || card;
 
       async function onEnter(){
-        if(mounted) return; // avoid double-mount
-        mounted = true;
+        // If the effect is already running (has a destroy function), do nothing.
+        if (container._effectDestroy) return;
         try{
           if(registry[id] && typeof registry[id].ensure === 'function') await registry[id].ensure();
           if(registry[id] && typeof registry[id].start === 'function') registry[id].start(container);
@@ -114,17 +127,15 @@
       }
 
       function onLeave(){
-        if(!mounted) return;
-        mounted = false;
+        // If the effect isn't running (no destroy function), do nothing.
+        if (!container._effectDestroy) return;
         try{ if(registry[id] && typeof registry[id].stop === 'function') registry[id].stop(container); }catch(e){ console.error('stop error', e); }
       }
 
       card.addEventListener('pointerenter', onEnter);
-      card.addEventListener('mouseenter', onEnter);
       card.addEventListener('pointerleave', onLeave);
-      card.addEventListener('mouseleave', onLeave);
-      card.addEventListener('focus', onEnter);
-      card.addEventListener('blur', onLeave);
+      card.addEventListener('focusin', onEnter);
+      card.addEventListener('focusout', onLeave);
 
       // store handlers to allow detach if needed
       card._embedControllerHandlers = { onEnter, onLeave };
