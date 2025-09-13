@@ -1,0 +1,8 @@
+/* Parallax Interactive Cards
+   JS-driven parallax that activates on hover/keyboard focus only.
+*/
+body{margin:0;display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui}
+.cards{display:flex;gap:20px}
+.card{width:200px;height:260px;border-radius:12px;background:linear-gradient(180deg,#112,#345);color:white;display:flex;align-items:center;justify-content:center;transform:translateZ(0);transition:box-shadow .2s ease, transform .12s ease;box-shadow:0 6px 20px rgba(2,6,23,0.5);cursor:pointer}
+.card h3{margin:0}
+.card.is-active{box-shadow:0 18px 40px rgba(2,6,23,0.6)}

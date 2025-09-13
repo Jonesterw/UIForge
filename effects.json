@@ -1,0 +1,62 @@
+[
+  {
+    "id": "fade-box-effect",
+    "title": "Fade Box",
+    "category": "css",
+    "description": "A simple box that fades in and scales up on hover.",
+    "author": "Jonesterw",
+    "link": "#",
+    "tags": ["css", "hover", "animation"],
+    "explanation": "This effect uses CSS transitions to smoothly change the opacity and scale of the box when you hover over it.",
+    "html": "<div class=\"fade-box\">Hover Me</div>",
+    "css": ".fade-box{width:200px;height:100px;background-color:#f06;color:white;display:flex;justify-content:center;align-items:center;font-family:sans-serif;cursor:pointer;opacity:0.7;transition:opacity .5s ease,transform .3s ease}.fade-box:hover{opacity:1;transform:scale(1.1)}"
+  },
+  {
+    "id": "pulse-box-effect",
+    "title": "Pulse Box",
+    "category": "css",
+    "description": "A box that pulses with a color animation.",
+    "author": "Jonesterw",
+    "link": "#",
+    "tags": ["css", "animation", "pulse"],
+    "explanation": "This effect uses a CSS keyframe animation to create a pulsing color change effect.",
+    "html": "<div class=\"pulse-box\">Pulsing...</div>",
+    "css": ".pulse-box{width:250px;height:150px;display:flex;justify-content:center;align-items:center;font-family:sans-serif;color:white;background-color:#f06;border-radius:12px;animation:pulse 2s infinite alternate}@keyframes pulse{0%{background-color:#f06}50%{background-color:#f39}100%{background-color:#f06}}"
+  },
+  {
+    "id": "glow-text-effect",
+    "title": "Glow Text",
+    "category": "css",
+    "description": "Text that glows and intensifies on hover.",
+    "author": "Jonesterw",
+    "link": "#",
+    "tags": ["css", "hover", "text-effect", "glow"],
+    "explanation": "This uses the CSS text-shadow property to create a glowing effect around the text, which intensifies on hover.",
+    "html": "<div class=\"glow-text\">Glow</div>",
+    "css": ".glow-text{font-family:sans-serif;font-size:48px;color:#fff;text-align:center;text-shadow:0 0 5px #f06,0 0 10px #f06,0 0 20px #f39;transition:text-shadow .3s ease}.glow-text:hover{text-shadow:0 0 10px #f39,0 0 20px #f06,0 0 30px #f0f}"
+  },
+  {
+    "id": "pressed-button-effect",
+    "title": "Pressed Button",
+    "category": "css",
+    "description": "A button that gives a 3D press-down effect when clicked.",
+    "author": "Jonesterw",
+    "link": "#",
+    "tags": ["css", "button", "interaction", "active"],
+    "explanation": "This uses the :active pseudo-class to change the button's transform and box-shadow, creating a satisfying press effect.",
+    "html": "<button class=\"pressed-btn\">Press Me</button>",
+    "css": ".pressed-btn{padding:15px 30px;font-size:16px;background-color:#06f;color:white;border:none;border-radius:8px;cursor:pointer;box-shadow:0 5px #0044aa;transition:all .2s ease}.pressed-btn:active{transform:translateY(5px);box-shadow:0 2px #0044aa}"
+  },
+  {
+    "id": "3d-lift-card-effect",
+    "title": "3D Lift Card",
+    "category": "css",
+    "description": "A card that lifts and tilts in 3D space on hover.",
+    "author": "Jonesterw",
+    "link": "#",
+    "tags": ["css", "hover", "3d", "transform"],
+    "explanation": "This effect uses CSS 3D transforms and perspective to create a card that appears to lift off the page on hover.",
+    "html": "<div class=\"scene\"><div class=\"card\">3D Lift</div></div>",
+    "css": ".scene{display:flex;justify-content:center;align-items:center;perspective:800px}.card{width:200px;height:120px;background-color:#f06;color:white;display:flex;justify-content:center;align-items:center;border-radius:12px;box-shadow:0 10px 20px rgba(0,0,0,.4);transition:transform .4s ease,box-shadow .4s ease;transform-style:preserve-3d}.card:hover{transform:translateZ(30px) rotateX(10deg) rotateY(10deg) scale(1.05);box-shadow:0 20px 30px rgba(0,0,0,.6)}"
+  }
+]

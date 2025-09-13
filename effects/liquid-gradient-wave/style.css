@@ -1,0 +1,83 @@
+/* Liquid Gradient Wave
+   Pure CSS effect that animates a wavy gradient background.
+   Important: animation is paused by default; it runs only on hover or focus.
+*/
+
+:root{
+  --bg:#0f172a;
+  --size: 420px;
+}
+
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);font-family:system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+
+.demo{padding:32px}
+
+.panel{
+  position:relative;
+  width:var(--size);
+  height:260px;
+  padding:24px;
+  border-radius:16px;
+  color: white;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  box-shadow:0 8px 30px rgba(2,6,23,0.6);
+  transform:translateZ(0);
+  cursor:pointer;
+}
+
+/* Layered gradient pseudo-elements produce the liquid motion */
+.panel::before,
+.panel::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  z-index:0;
+  background:linear-gradient(120deg,#ff7a7a, #ffd67a, #7afcff);
+  mix-blend-mode:screen;
+  filter:blur(22px) saturate(140%);
+  transform:translate3d(0,0,0) scale(1.15);
+  opacity:0.95;
+  /* we animate background-position to create movement */
+  background-size:300% 300%;
+  animation:wave 6s linear infinite;
+  animation-play-state:paused; /* paused by default */
+}
+
+.panel::after{
+  filter:blur(44px) saturate(160%);
+  opacity:0.75;
+  animation-duration:9s;
+  animation-play-state:paused; /* paused by default */
+}
+
+/* Inner content remains above the gradients */
+.panel > *{position:relative;z-index:2;text-align:center}
+
+h1{margin:0 0 8px;font-size:20px;letter-spacing:0.6px}
+p{margin:0;color:rgba(255,255,255,0.9)}
+
+/* Only run animations on hover or keyboard focus */
+.panel:hover::before,
+.panel:focus-visible::before,
+.panel:hover::after,
+.panel:focus-visible::after{
+  animation-play-state:running;
+}
+
+@keyframes wave{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* small responsive tweaks */
+@media (max-width:480px){
+  :root{--size:320px}
+  .panel{height:220px}
+}

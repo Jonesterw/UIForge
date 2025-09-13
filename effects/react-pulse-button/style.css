@@ -1,0 +1,6 @@
+body{margin:0;display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;background:#f6f8fb}
+.pulse-btn{appearance:none;border:0;background:#ff6b6b;color:white;padding:14px 22px;border-radius:999px;font-weight:600;cursor:pointer;transition:transform .12s ease}
+.pulse-btn:hover{transform:scale(1.03)}
+.pulse{position:relative}
+.pulse::after{content:'';position:absolute;inset:-8px;border-radius:999px;background:radial-gradient(circle,rgba(255,107,107,.25),transparent 40%);opacity:0;transform:scale(.6);transition:opacity .25s, transform .35s}
+.pulse-btn:hover + .pulse::after{opacity:1;transform:scale(1)}

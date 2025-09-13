@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Web Art Museum</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- ===================== -->
+  <!--      SITE HEADER      -->
+  <!-- ===================== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="site-title">Web Art Museum</h1>
+      <nav class="main-nav">
+        <a href="https://github.com/<your-username>/<your-repo>">Home</a>
+        <a href="https://github.com/<your-username>/<your-repo>#project-structure">Categories</a>
+        <a href="https://github.com/<your-username>/<your-repo>/blob/main/CONTRIBUTING.md">Contribute</a>
+        <a href="https://github.com/<your-username>/<your-repo>#license">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== -->
+  <!--     MAIN CONTENT      -->
+  <!-- ===================== -->
+  <main class="container">
+    <section id="gallery" class="gallery-grid">
+      <!-- Cards rendered here by script.js -->
+    </section>
+  </main>
+
+  <!-- ===================== -->
+  <!--      SITE FOOTER      -->
+  <!-- ===================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2025 Web Art Museum. <a href="https://github.com/Jonesterw/WebArt-Gallery/blob/main/CONTRIBUTING.md">Contribute on GitHub</a></p>
+    </div>
+  </footer>
+
+  <!-- ==================================================== -->
+  <!-- CARD TEMPLATE (Used by script.js to create cards) -->
+  <!-- ==================================================== -->
+  <template id="card-template">
+    <article class="effect-card">
+      <div class="card-preview"></div>
+      <div class="card-body">
+        <h3 class="effect-title"></h3>
+        <p class="effect-desc"></p>
+        <div class="tags"></div>
+        <div class="card-actions">
+          <button class="toggle-code" data-lang="html">HTML</button>
+          <button class="toggle-code" data-lang="css">CSS</button>
+          <button class="toggle-code" data-lang="js">JS</button>
+          <button class="toggle-code" data-lang="ts">TS</button>
+          <button class="toggle-code" data-lang="scss">SCSS</button>
+        </div>
+        <div class="code-display" hidden>
+          <pre><code class="code-block"></code></pre>
+          <button class="copy-code">Copy Code</button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <!-- ===================== -->
+  <!--    GLOBAL SCRIPTS     -->
+  <!-- ===================== -->
+  <script src="script.js" defer></script>
+  <script src="effects/embed-controller.js" defer></script>
+</body>
+</html>
