@@ -20,8 +20,13 @@ Here’s the step-by-step process for adding your own creative effect to the gal
     - Click the **Fork** button on GitHub to create your own copy of the project.
 
 2.  **Create Your Effect**
-    - **For simple, self-contained effects** (HTML/CSS in one block), you can add them directly to `effects.json`.
-    - **For more complex effects**, create a new folder for your effect under the correct category in `/effects/` (e.g., `/effects/css/my-cool-effect/`). Your folder should contain an `index.html` and any other necessary files (`style.css`, `script.js`).
+    - **CSS-Only Effects**: Add the `html` and `css` directly to a new entry in `effects.json`.
+    - **JavaScript Effects**:
+        1. Add your `html` and `css` to a new entry in `effects.json`.
+        2. Add your JavaScript logic as a new `init...` function inside `effects/js/custom-effects.js`. This function should return a "cleanup" function to remove event listeners.
+        3. Register your new effect's `id` and `init...` function in `effects/embed-controller.js`.
+        4. Copy the final JavaScript code into the `js` property of your effect's entry in `effects.json` so it appears in the code viewer.
+    - **Complex/Framework Effects**: For effects using frameworks (like React, Vue) or multiple files, create a new folder in `/effects/` and follow the existing examples.
 
 3.  **Update `effects.json`**
     - Add a new JSON object for your effect. Make sure it has a unique `id` and fill in the other details.
@@ -122,5 +127,3 @@ The MIT License allows anyone to view, learn from, copy, and contribute freely. 
 ## Links
 
 -   **GitHub Repo** – Contribute on GitHub!
-
-

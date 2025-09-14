@@ -22,7 +22,7 @@
   // Helper to load a script or stylesheet only once
   function loadScriptOnce(src){
     return new Promise((resolve, reject) =>{
-      if(document.querySelector(`script[data-src=\"${src}\"]`)) return resolve();
+      if(document.querySelector(`script[data-src="${src}"]`)) return resolve();
       const s = document.createElement('script');
       s.src = src;
       s.async = false; // keep order
@@ -34,7 +34,7 @@
   }
 
   function loadStyleOnce(href){
-    if(document.querySelector(`link[data-href=\"${href}\"]`)) return;
+    if(document.querySelector(`link[data-href="${href}"]`)) return;
     const l = document.createElement('link');
     l.rel = 'stylesheet';
     l.href = href;
@@ -96,6 +96,57 @@
       start(container){
         if (typeof global.initParticleTrail === 'function') {
           const destroy = global.initParticleTrail(container);
+          container._effectDestroy = destroy || null;
+        }
+      },
+      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
+    }
+    ,
+    'magnetic-hover-effect': {
+      ensure(){ return Promise.resolve(); },
+      start(container){
+        if (typeof window.initMagneticHoverEffect === 'function') {
+          const destroy = window.initMagneticHoverEffect(container);
+          container._effectDestroy = destroy || null;
+        }
+      },
+      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
+    },
+    'confetti-burst-effect': {
+      ensure(){ return Promise.resolve(); },
+      start(container){
+        if (typeof window.initConfettiBurstEffect === 'function') {
+          const destroy = window.initConfettiBurstEffect(container);
+          container._effectDestroy = destroy || null;
+        }
+      },
+      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
+    },
+    'typewriter-text-effect': {
+      ensure(){ return Promise.resolve(); },
+      start(container){
+        if (typeof window.initTypewriterTextEffect === 'function') {
+          const destroy = window.initTypewriterTextEffect(container);
+          container._effectDestroy = destroy || null;
+        }
+      },
+      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
+    },
+    'expanding-search-bar': {
+      ensure(){ return Promise.resolve(); },
+      start(container){
+        if (typeof window.initExpandingSearchBar === 'function') {
+          const destroy = window.initExpandingSearchBar(container);
+          container._effectDestroy = destroy || null;
+        }
+      },
+      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
+    },
+    'interactive-particle-network': {
+      ensure(){ return Promise.resolve(); },
+      start(container){
+        if (typeof window.initInteractiveParticleNetwork === 'function') {
+          const destroy = window.initInteractiveParticleNetwork(container);
           container._effectDestroy = destroy || null;
         }
       },
