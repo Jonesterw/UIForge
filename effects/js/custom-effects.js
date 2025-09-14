@@ -142,6 +142,8 @@ function initTypewriterTextEffect(container) {
   return () => {
     clearTimeout(timeoutId);
     el.textContent = '';
+    // Also reset the animation so the cursor blinks again immediately.
+    el.style.animation = '';
   };
 }
 window.initTypewriterTextEffect = initTypewriterTextEffect;
