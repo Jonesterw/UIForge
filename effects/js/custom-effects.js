@@ -123,11 +123,18 @@ function initTypewriterTextEffect(container) {
   const text = 'Typewriter Animation!';
   const el = container.querySelector('.typewriter-text');
   if (!el) return;
+
+  // Ensure the cursor blink animation is active when the effect starts.
+  el.style.animation = '';
+
   let i = 0, timeoutId;
   function type() {
     if (i <= text.length) {
       el.textContent = text.slice(0, i++);
       timeoutId = setTimeout(type, 80);
+    } else {
+      // Typing is finished, so stop the blinking cursor animation.
+      el.style.animation = 'none';
     }
   }
   type();
