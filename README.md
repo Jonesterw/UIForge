@@ -79,4 +79,4 @@ The MIT License allows anyone to view, learn from, copy, and contribute freely. 
 ## Links
 
 -   **GitHub Repo**: [Jonesterw/WebArt-Gallery](https://github.com/Jonesterw/WebArt-Gallery)
--   **Live Demo**: [Web Art Museum](https://jonesterw.github.io/WebArt-Gallery/)
+-   **Live Demo**: [Web Art Museum](https://jonesterw.github.io/WebArt-Museum/) 
