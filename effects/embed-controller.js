@@ -151,36 +151,79 @@
         }
       },
       stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
+    },
+    'like-dislike-widget': {
+      ensure(){ return Promise.resolve(); },
+      start(container){
+        if (typeof window.initLikeDislikeWidget === 'function') {
+          const destroy = window.initLikeDislikeWidget(container);
+          container._effectDestroy = destroy || null;
+        }
+      },
+      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
     }
   };
 
   /* =========================== */
   /*    MAIN CONTROLLER LOGIC    */
   /* =========================== */
+  let effectsMap = null;
+
   function attachEmbedController(root){
-    // root: element that contains cards; each card should have attribute data-effect with effect id
+    // On first run, build a Map from the global effects array for fast lookups.
+    if (!effectsMap && global.allEffects) {
+      effectsMap = new Map(global.allEffects.map(e => [e.id, e]));
+    }
+    if (!effectsMap) {
+      console.error("Embed controller could not find window.allEffects. Make sure script.js exposes it.");
+      return;
+    }
+
     root = root || document;
     const cards = root.querySelectorAll('[data-effect]');
 
     cards.forEach(card => {
       const id = card.getAttribute('data-effect');
-      if(!registry[id]) return;
-      // The container for the effect is the preview area, or a .demo div, or the card itself as a fallback.
-      const container = card.querySelector('.card-preview') || card.querySelector('.demo') || card;
+      const container = card.querySelector('.card-preview');
+      if (!container) return;
+
+      const effectData = effectsMap.get(id);
+      const controller = registry[id]; // Specific JS controller, if any
 
       async function onEnter(){
-        // If the effect is already running (has a destroy function), do nothing.
-        if (container._effectDestroy) return;
-        try{
-          if(registry[id] && typeof registry[id].ensure === 'function') await registry[id].ensure();
-          if(registry[id] && typeof registry[id].start === 'function') registry[id].start(container);
-        }catch(e){ console.error('start error', e); }
+        // Add a class to the preview container to trigger CSS-based hover animations.
+        container.classList.add('active-preview');
+
+        // If a JS controller is defined and it's already running (has a cleanup property attached), do nothing.
+        if (controller && (container._effectDestroy || container._effectController || container._reactUnmount || container._vueInstance)) {
+          return;
+        }
+
+        // Start the JS via its specific controller, if one exists.
+        if (controller) {
+          try {
+            if (typeof controller.ensure === 'function') await controller.ensure();
+            if (typeof controller.start === 'function') controller.start(container);
+          } catch(e) { console.error(`Error starting effect "${id}":`, e); }
+        }
       }
 
-      function onLeave(){
-        // If the effect isn't running (no destroy function), do nothing.
-        if (!container._effectDestroy) return;
-        try{ if(registry[id] && typeof registry[id].stop === 'function') registry[id].stop(container); }catch(e){ console.error('stop error', e); }
+      function onLeave(e){
+        // If this is a focusout event and focus is moving to another element
+        // within the same card, we don't want to tear down the effect.
+        // This is crucial for components with internal focusable elements, like an input field.
+        if (e.type === 'focusout' && e.relatedTarget && card.contains(e.relatedTarget)) {
+          return;
+        }
+
+        // Remove the active class to pause CSS animations.
+        container.classList.remove('active-preview');
+
+        // 1. Stop the JS controller to clean up listeners.
+        if (controller && typeof controller.stop === 'function') {
+          try { controller.stop(container); } catch(e) { console.error(`Error stopping effect "${id}":`, e); }
+        }
+        // Do not clear the innerHTML, so the "paused" state remains visible.
       }
 
       card.addEventListener('pointerenter', onEnter);
@@ -188,7 +231,6 @@
       card.addEventListener('focusin', onEnter);
       card.addEventListener('focusout', onLeave);
 
-      // store handlers to allow detach if needed
       card._embedControllerHandlers = { onEnter, onLeave };
     });
   }

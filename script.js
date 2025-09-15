@@ -1,6 +1,14 @@
 // Basic script to render cards from effects.json, handle search, filters, toggles and copy
 
 /* =========================== */
+/*        GLOBAL STATE         */
+/* =========================== */
+let allEffects = [];
+let currentFilters = {
+  search: '',
+  tag: 'all'
+};
+/* =========================== */
 /*        DATA FETCHING        */
 /* =========================== */
 async function fetchEffects(){
@@ -41,22 +49,24 @@ function createCard(effect){
   const langButtons = node.querySelectorAll('[data-lang]');
   const actionsContainer = node.querySelector('.card-actions');
   let currentLang = null;
-  let hideTimer = null; // Timer to add a delay before hiding
+  let hideTimer = null;
 
   function showCode(lang) {
-    // If a hide action is pending, cancel it
-    if (hideTimer) {
-      clearTimeout(hideTimer);
-      hideTimer = null;
-    }
+    clearTimeout(hideTimer); // Always cancel hide timer when showing
     currentLang = lang;
     codeBlock.textContent = effect[lang] || '';
     codeDisplay.classList.add('visible');
+    cardRoot.classList.add('is-active-popover');
   }
 
   function hideCode() {
     currentLang = null;
     codeDisplay.classList.remove('visible');
+    cardRoot.classList.remove('is-active-popover');
+  }
+
+  function startHideTimer() {
+    hideTimer = setTimeout(hideCode, 300); // Delay to allow moving to the popover
   }
 
   langButtons.forEach(btn => {
@@ -64,56 +74,170 @@ function createCard(effect){
     if (!effect[lang]) {
       btn.disabled = true;
     } else {
-      btn.addEventListener('mouseenter', () => {
-        showCode(lang);
-      });
+      btn.addEventListener('mouseenter', () => showCode(lang));
+      btn.addEventListener('mouseleave', startHideTimer);
     }
   });
 
-  // When leaving the entire actions area, start a timer to hide the popover
-  actionsContainer.addEventListener('mouseleave', () => {
-    hideTimer = setTimeout(() => {
-      hideCode();
-    }, 300); // 300ms delay gives the user time to move to the popover
-  });
-
-  // If the user moves back into the actions area (including the popover), cancel the hide timer
-  actionsContainer.addEventListener('mouseenter', () => {
-    if (hideTimer) {
-      clearTimeout(hideTimer);
-      hideTimer = null;
-    }
-  });
+  // If the user's mouse enters the popover, cancel the timer so it stays open.
+  codeDisplay.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+  // If the mouse leaves the popover, start the timer to hide it.
+  codeDisplay.addEventListener('mouseleave', startHideTimer);
 
 
   // --- 3. Set up copy button ---
   copyBtn.addEventListener('click', () => {
     if (!currentLang) return;
     const codeToCopy = effect[currentLang] || '';
-    if (codeToCopy) navigator.clipboard.writeText(codeToCopy).then(() => alert('Code copied to clipboard'));
+    if (codeToCopy) {
+      navigator.clipboard.writeText(codeToCopy).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => { copyBtn.textContent = 'Copy Code'; }, 2000);
+      });
+    }
   });
 
   return node;
 }
 
 /* =========================== */
+/*  FILTER & RENDER FUNCTIONS  */
+/* =========================== */
+function renderGallery(effectsToRender) {
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+
+  if (effectsToRender.length === 0) {
+    gallery.innerHTML = `
+      <div class="no-results">
+        <h4>No Matches Found</h4>
+        <p>Try a different search term or filter.</p>
+      </div>
+    `;
+    return;
+  }
+
+  effectsToRender.forEach(e => gallery.appendChild(createCard(e)));
+
+  // Attach the embed controller to the newly rendered cards
+  if (window.attachEmbedController) {
+    window.attachEmbedController(gallery);
+  }
+}
+
+function applyFilters() {
+  let filtered = allEffects;
+  const searchTerm = currentFilters.search.toLowerCase().trim();
+
+  // 1. Filter by search term (title or tags)
+  if (searchTerm) {
+    filtered = filtered.filter(effect =>
+      effect.title.toLowerCase().includes(searchTerm) ||
+      (effect.tags && effect.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+    );
+  }
+
+  // 2. Filter by active tag
+  if (currentFilters.tag !== 'all') {
+    filtered = filtered.filter(effect =>
+      effect.tags && effect.tags.includes(currentFilters.tag)
+    );
+  }
+
+  renderGallery(filtered);
+}
+
+function renderFilterButtons() {
+  const filtersContainer = document.getElementById('filters-container');
+  if (!filtersContainer) return;
+
+  // 1. Collect all unique tags
+  const tags = new Set(['all']);
+  allEffects.forEach(effect => {
+    if (effect.tags) {
+      effect.tags.forEach(tag => tags.add(tag));
+    }
+  });
+  
+  const sortedTags = [...tags].sort();
+  const midPoint = Math.ceil(sortedTags.length / 2);
+  const firstRowTags = sortedTags.slice(0, midPoint);
+  const secondRowTags = sortedTags.slice(midPoint);
+
+  filtersContainer.innerHTML = '';
+
+  // Function to create a marquee row
+  function createMarqueeRow(tagList) {
+    if (tagList.length === 0) return null;
+
+    const row = document.createElement('div');
+    row.className = 'filters-row';
+
+    const track = document.createElement('div');
+    track.className = 'filters-track';
+
+    tagList.forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn';
+      btn.dataset.filter = tag;
+      btn.textContent = tag;
+      if (tag === currentFilters.tag) btn.classList.add('active');
+      track.appendChild(btn);
+    });
+
+    // Add the track twice for a seamless marquee effect
+    row.appendChild(track);
+    row.appendChild(track.cloneNode(true));
+    
+    return row;
+  }
+
+  const firstRow = createMarqueeRow(firstRowTags);
+  const secondRow = createMarqueeRow(secondRowTags);
+
+  if (firstRow) filtersContainer.appendChild(firstRow);
+  if (secondRow) filtersContainer.appendChild(secondRow);
+}
+
+/* =========================== */
 /*   INITIALIZATION FUNCTION   */
 /* =========================== */
 async function init(){
-  const effects = await fetchEffects();
-  const gallery = document.getElementById('gallery');
+  allEffects = await fetchEffects();
+  window.allEffects = allEffects; // Expose for embed-controller
+  const searchInput = document.getElementById('search-input');
+  const filtersContainer = document.getElementById('filters-container');
 
-  function renderGallery(){
-    gallery.innerHTML='';
-    effects.forEach(e => gallery.appendChild(createCard(e)));
+  // Initial render
+  renderFilterButtons();
+  renderGallery(allEffects);
 
-    // Attach the embed controller to the newly rendered cards
-    if (window.attachEmbedController) {
-      window.attachEmbedController(gallery);
-    }
+  // Setup search listener
+  searchInput.addEventListener('input', (e) => {
+    currentFilters.search = e.target.value;
+    applyFilters();
+  });
+
+  // Setup filter button listener using event delegation
+  if (filtersContainer) {
+    filtersContainer.addEventListener('click', (e) => {
+      if (e.target.matches('.filter-btn')) {
+        const tag = e.target.dataset.filter;
+        if (currentFilters.tag === tag) return; // No change
+
+        // Update active state on all buttons (original and clone)
+        filtersContainer.querySelectorAll('.filter-btn.active').forEach(activeBtn => {
+          activeBtn.classList.remove('active');
+        });
+        filtersContainer.querySelectorAll(`.filter-btn[data-filter='${tag}']`).forEach(clickedBtn => {
+          clickedBtn.classList.add('active');
+        });
+
+        currentFilters.tag = tag;
+        applyFilters();
+      }
+    });
   }
-
-  renderGallery();
 }
 
 window.addEventListener('DOMContentLoaded', init);
