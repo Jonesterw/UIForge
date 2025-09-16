@@ -55,24 +55,17 @@ function createCard(effect){
 
     // Defer the position check to the next frame to ensure layout is calculated
     requestAnimationFrame(() => {
-      const cardRect = cardRoot.getBoundingClientRect();
+      // Reset alignment before checking
+      codeDisplay.classList.remove('align-right');
+
+      const popoverRect = codeDisplay.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
-      const cardCenter = cardRect.left + cardRect.width / 2;
       const buffer = 16; // A small buffer from the edge
 
-      // Reset styles before calculating
-      codeDisplay.classList.remove('align-right');
-      codeDisplay.style.maxWidth = '';
-
-      if (cardCenter > viewportWidth / 2) {
-        // Card is on the right side of the screen, align pop-up to the right
+      // If the popover (in its default left-aligned position) overflows the right edge...
+      if (popoverRect.right > (viewportWidth - buffer)) {
+        // ...flip its alignment to the right side of the button container.
         codeDisplay.classList.add('align-right');
-        const availableWidth = cardRect.right - buffer;
-        codeDisplay.style.maxWidth = `${availableWidth}px`;
-      } else {
-        // Card is on the left side, default alignment is fine
-        const availableWidth = viewportWidth - cardRect.left - buffer;
-        codeDisplay.style.maxWidth = `${availableWidth}px`;
       }
     });
   }
@@ -82,7 +75,6 @@ function createCard(effect){
     codeDisplay.classList.remove('visible');
     cardRoot.classList.remove('is-active-popover');
     codeDisplay.classList.remove('align-right'); // Ensure reset on hide
-    codeDisplay.style.maxWidth = ''; // And reset the max-width
   }
 
   function startHideTimer() {
