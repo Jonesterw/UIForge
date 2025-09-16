@@ -1,17 +1,8 @@
-# Web Art Museum 
+# UIForge
 
 A community-driven gallery of creative web effects, layouts, and interactive experiments — designed for learning, inspiration, reference and collaboration.
 
 Whether you’re a junior developer, a curious beginner, or someone who loves to experiment with web design, this is a place to share, explore, and learn from each other. Think of this project as a museum, library, and playground all in one.
-
-## Why This Project Exists
-
-This project was started by a junior developer building front-end skills, who wanted a space where:
-
--   People can showcase effects, layouts, UIs, or UX concepts.
--   Contributors explain their code with comments so others can understand.
--   Everyone can collaborate, learn, and make friends in the web dev community.
--   A reference place for ui components.
 
 ## How the Gallery Works: An In-Depth Look
 
@@ -46,8 +37,6 @@ For detailed instructions and best practices, please read our **[CONTRIBUTING.md
 
 ## Project Structure
 
-The project is organized to keep the core gallery logic separate from the individual effects, making it modular and easy to maintain.
-
 ```
 /effects
    /css          → CSS-only effects (hover, animations, transitions)
@@ -58,8 +47,8 @@ The project is organized to keep the core gallery logic separate from the indivi
    /experimental → Experimental effects (scroll-jacking, generative art, etc.)
 /assets         → Images, icons, and shared resources
 index.html      → Main gallery page
-styles.css      → Global styles (layout, theme, animations)
-script.js       → Renders cards, handles filtering/search
+styles.css      → Global styles (layout, theme)
+script.js       → Renders cards, handles filtering/search, and pop-ups
 effects.json    → Data for all effects in the gallery
 CONTRIBUTING.md → Contribution guidelines
 README.md
@@ -69,7 +58,6 @@ README.md
 
 -   Inspire developers with a diverse gallery of effects and layouts.
 -   Encourage a collaborative, friendly community of web developers.
--   Show the artistic side of front-end development.
 
 ## License
 
@@ -79,5 +67,5 @@ The MIT License allows anyone to view, learn from, copy, and contribute freely. 
 
 ## Links
 
--   **GitHub Repo**: [Jonesterw/WebArt-Gallery](https://github.com/Jonesterw/WebArt-Gallery)
--   **Live Demo**: [Web Art Museum](https://jonesterw.github.io/WebArt-Museum/) 
+-   **GitHub Repo**: [UIForge](https://github.com/Jonesterw/UIForge)
+-   **Live Demo**: [UIForge](https://jonesterw.github.io/UIForge/) 

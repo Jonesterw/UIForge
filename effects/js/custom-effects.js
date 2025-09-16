@@ -187,173 +187,41 @@ function initExpandingSearchBar(container) {
   if (!searchBox || !searchBtn || !searchInput) return;
 
   const toggleSearch = (e) => {
-    // Stop propagation to prevent card's mouseleave event from firing immediately
-    e.stopPropagation(); 
+    e.stopPropagation();
     searchBox.classList.toggle('active');
     if (searchBox.classList.contains('active')) {
       searchInput.focus();
     }
   };
-  
-  // Also close if the mouse leaves the entire preview area
-  const closeSearch = () => {
-    searchBox.classList.remove('active');
-  };
 
   searchBtn.addEventListener('click', toggleSearch);
-  container.addEventListener('mouseleave', closeSearch);
 
   return () => {
     searchBtn.removeEventListener('click', toggleSearch);
-    container.removeEventListener('mouseleave', closeSearch);
+    // On cleanup, ensure the search box is closed.
+    searchBox.classList.remove('active');
   };
 }
 window.initExpandingSearchBar = initExpandingSearchBar;
 
-// Interactive Particle Network
-function initInteractiveParticleNetwork(container) {
-  const canvas = container.querySelector('.particle-network-canvas');
-  const ctx = canvas.getContext('2d');
-  if (!canvas) return;
-
-  // Helper function to limit the rate at which a function gets called.
-  function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => { clearTimeout(timeout); func(...args); };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
+// This is the compiled JavaScript from the TypeScript source.
+function initGlitchText(container) {
+    const el = container.querySelector('.glitch-text');
+    if (!el) return () => { };
+    let glitchTimeout;
+    const startGlitch = () => {
+        if (!el.classList.contains('glitching')) {
+            el.classList.add('glitching');
+        }
+        clearTimeout(glitchTimeout);
+        glitchTimeout = window.setTimeout(() => {
+            el.classList.remove('glitching');
+        }, 1000 + Math.random() * 500);
     };
-  };
-
-  let animationFrameId;
-  let particles = [];
-  
-  const mouse = {
-    x: null,
-    y: null,
-  };
-
-  class Particle {
-    constructor(x, y, directionX, directionY, size) {
-      this.x = x;
-      this.y = y;
-      this.directionX = directionX;
-      this.directionY = directionY;
-      this.size = size;
-    }
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-      ctx.fillStyle = 'rgba(88, 166, 255, 0.8)'; // var(--primary-accent)
-      ctx.fill();
-    }
-    update() {
-      if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-      if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-      this.x += this.directionX;
-      this.y += this.directionY;
-      this.draw();
-    }
-  }
-
-  function resizeCanvas() {
-    // Set canvas size to match its container's display size
-    canvas.width = container.offsetWidth;
-    canvas.height = container.offsetHeight;
-    initParticles();
-  }
-  
-  // Debounce resize to avoid performance issues
-  const debouncedResize = debounce(resizeCanvas, 100);
-  // Use ResizeObserver for better performance and reliability
-  const resizeObserver = new ResizeObserver(debouncedResize);
-  resizeObserver.observe(container);
-
-  // Initial resize
-  resizeCanvas();
-
-  // Mouse listeners
-  const onMouseMove = (event) => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = event.clientX - rect.left;
-    mouse.y = event.clientY - rect.top;
-  };
-  const onMouseOut = () => {
-    mouse.x = null;
-    mouse.y = null;
-  };
-  container.addEventListener('mousemove', onMouseMove);
-  container.addEventListener('mouseout', onMouseOut);
-
-  function initParticles() {
-    particles = [];
-    // Increase particle density
-    let numberOfParticles = (canvas.height * canvas.width) / 3500;
-    for (let i = 0; i < numberOfParticles; i++) {
-      let size = (Math.random() * 1.5) + 1;
-      let x = (Math.random() * ((canvas.width - size * 2) - (size * 2)) + size * 2);
-      let y = (Math.random() * ((canvas.height - size * 2) - (size * 2)) + size * 2);
-      let directionX = (Math.random() * .4) - .2;
-      let directionY = (Math.random() * .4) - .2;
-      particles.push(new Particle(x, y, directionX, directionY, size));
-    }
-  }
-
-  function connect() {
-    const connectRadiusSq = Math.pow(Math.min(canvas.width, canvas.height) / 5, 2);
-    const mouseConnectRadiusSq = Math.pow(Math.min(canvas.width, canvas.height) / 3.5, 2);
-
-    // Connect particles to each other
-    for (let a = 0; a < particles.length; a++) {
-      for (let b = a; b < particles.length; b++) {
-        let distanceSq = Math.pow(particles[a].x - particles[b].x, 2) + Math.pow(particles[a].y - particles[b].y, 2);
-        
-        if (distanceSq < connectRadiusSq) {
-          const opacityValue = 1 - (distanceSq / connectRadiusSq);
-          ctx.strokeStyle = `rgba(140, 180, 255, ${opacityValue})`;
-          ctx.lineWidth = 0.5;
-          ctx.beginPath();
-          ctx.moveTo(particles[a].x, particles[a].y);
-          ctx.lineTo(particles[b].x, particles[b].y);
-          ctx.stroke();
-        }
-      }
-    }
-    // Connect particles to mouse
-    if (mouse.x !== null && mouse.y !== null) {
-      for (let i = 0; i < particles.length; i++) {
-        let distanceSq = Math.pow(particles[i].x - mouse.x, 2) + Math.pow(particles[i].y - mouse.y, 2);
-        
-        if (distanceSq < mouseConnectRadiusSq) {
-          const opacityValue = 1 - (distanceSq / mouseConnectRadiusSq);
-          ctx.strokeStyle = `rgba(233, 117, 168, ${opacityValue})`; // var(--secondary-accent)
-          ctx.lineWidth = 0.8;
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.stroke();
-        }
-      }
-    }
-  }
-
-  function animate() {
-    animationFrameId = requestAnimationFrame(animate);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < particles.length; i++) {
-      particles[i].update();
-    }
-    connect();
-  }
-  
-  animate();
-
-  return () => {
-    cancelAnimationFrame(animationFrameId);
-    resizeObserver.disconnect();
-    container.removeEventListener('mousemove', onMouseMove);
-    container.removeEventListener('mouseout', onMouseOut);
-  };
+    container.addEventListener('mouseenter', startGlitch);
+    return () => {
+        container.removeEventListener('mouseenter', startGlitch);
+        clearTimeout(glitchTimeout);
+    };
 }
-window.initInteractiveParticleNetwork = initInteractiveParticleNetwork;
+window.initGlitchText = initGlitchText;

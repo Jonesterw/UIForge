@@ -134,29 +134,47 @@
     },
     'expanding-search-bar': {
       ensure(){ return Promise.resolve(); },
-      start(container){
-        if (typeof window.initExpandingSearchBar === 'function') {
+      start(container) {
+        // When the mouse enters the card, cancel any pending timer that was set to close the search bar.
+        clearTimeout(container._searchCloseTimer);
+
+        // If the effect isn't already running, initialize it.
+        if (typeof window.initExpandingSearchBar === 'function' && !container._effectDestroy) {
           const destroy = window.initExpandingSearchBar(container);
           container._effectDestroy = destroy || null;
         }
       },
-      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
-    },
-    'interactive-particle-network': {
-      ensure(){ return Promise.resolve(); },
-      start(container){
-        if (typeof window.initInteractiveParticleNetwork === 'function') {
-          const destroy = window.initInteractiveParticleNetwork(container);
-          container._effectDestroy = destroy || null;
+      stop(container) {
+        const searchBox = container.querySelector('.search-box');
+        // If the search box is open when the mouse leaves the card, start a timer.
+        if (searchBox && searchBox.classList.contains('active')) {
+          clearTimeout(container._searchCloseTimer); // Clear any old timer.
+          container._searchCloseTimer = setTimeout(() => {
+            // After the delay, close the box and run the real cleanup.
+            searchBox.classList.remove('active');
+            if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; }
+          }, 750);
+        } else {
+          // If the search box is already closed, clean up immediately.
+          if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; }
         }
-      },
-      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
+      }
     },
     'like-dislike-widget': {
       ensure(){ return Promise.resolve(); },
       start(container){
         if (typeof window.initLikeDislikeWidget === 'function') {
           const destroy = window.initLikeDislikeWidget(container);
+          container._effectDestroy = destroy || null;
+        }
+      },
+      stop(container){ if (container._effectDestroy) { container._effectDestroy(); container._effectDestroy = null; } }
+    },
+    'glitch-text-effect': {
+      ensure(){ return Promise.resolve(); },
+      start(container){
+        if (typeof window.initGlitchText === 'function') {
+          const destroy = window.initGlitchText(container);
           container._effectDestroy = destroy || null;
         }
       },

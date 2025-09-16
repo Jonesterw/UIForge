@@ -22,22 +22,15 @@ async function fetchEffects(){
 /* =========================== */
 /*      UTILITY FUNCTIONS      */
 /* =========================== */
-function renderTags(container,tags){container.innerHTML='';tags.forEach(t=>{const el=document.createElement('span');el.className='tag';el.textContent=t;container.appendChild(el)})}
-
-/* =========================== */
-/*     CARD RENDERING LOGIC    */
-/* =========================== */
 function createCard(effect){
   const tpl = document.getElementById('card-template');
   const node = tpl.content.cloneNode(true);
   const cardRoot = node.querySelector('.effect-card');
   cardRoot.dataset.effect = effect.id;
+  if (effect.layout) {
+    cardRoot.classList.add(...effect.layout.split(' '));
+  }
 
-  node.querySelector('.effect-title').textContent = effect.title;
-  node.querySelector('.effect-desc').textContent = effect.description;
-  renderTags(node.querySelector('.tags'), effect.tags || []);
-  
-  // --- 1. Render the live preview ---
   const preview = node.querySelector('.card-preview');
   const fullCode = (effect.html || '') + `<style>${effect.css || ''}</style>`;
   preview.innerHTML = fullCode;
@@ -54,15 +47,42 @@ function createCard(effect){
   function showCode(lang) {
     clearTimeout(hideTimer); // Always cancel hide timer when showing
     currentLang = lang;
-    codeBlock.textContent = effect[lang] || '';
+    codeBlock.textContent = effect[lang] || `// No ${lang.toUpperCase()} code provided for this effect.`;
+
+    // Make the popover visible so we can measure it
     codeDisplay.classList.add('visible');
     cardRoot.classList.add('is-active-popover');
+
+    // Defer the position check to the next frame to ensure layout is calculated
+    requestAnimationFrame(() => {
+      const cardRect = cardRoot.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const cardCenter = cardRect.left + cardRect.width / 2;
+      const buffer = 16; // A small buffer from the edge
+
+      // Reset styles before calculating
+      codeDisplay.classList.remove('align-right');
+      codeDisplay.style.maxWidth = '';
+
+      if (cardCenter > viewportWidth / 2) {
+        // Card is on the right side of the screen, align pop-up to the right
+        codeDisplay.classList.add('align-right');
+        const availableWidth = cardRect.right - buffer;
+        codeDisplay.style.maxWidth = `${availableWidth}px`;
+      } else {
+        // Card is on the left side, default alignment is fine
+        const availableWidth = viewportWidth - cardRect.left - buffer;
+        codeDisplay.style.maxWidth = `${availableWidth}px`;
+      }
+    });
   }
 
   function hideCode() {
     currentLang = null;
     codeDisplay.classList.remove('visible');
     cardRoot.classList.remove('is-active-popover');
+    codeDisplay.classList.remove('align-right'); // Ensure reset on hide
+    codeDisplay.style.maxWidth = ''; // And reset the max-width
   }
 
   function startHideTimer() {
@@ -204,6 +224,13 @@ function renderFilterButtons() {
 /* =========================== */
 async function init(){
   allEffects = await fetchEffects();
+
+  // Shuffle the array for a random layout on each load
+  for (let i = allEffects.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allEffects[i], allEffects[j]] = [allEffects[j], allEffects[i]];
+  }
+
   window.allEffects = allEffects; // Expose for embed-controller
   const searchInput = document.getElementById('search-input');
   const filtersContainer = document.getElementById('filters-container');

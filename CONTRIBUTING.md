@@ -1,4 +1,4 @@
-# Contributing to Web Art Museum 
+# Contributing to UIForge 
 
 Welcome! This project is all about **sharing, learning, and inspiring**. It's designed to be **open, flexible, and educational**. Whether you’re a beginner, junior developer, or experienced coder, your contributions help make this museum **fun and valuable for everyone**.
 

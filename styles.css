@@ -1,4 +1,4 @@
-/* Web Art Museum - Redesigned by Gemini (v3) */
+/* UIForge - Redesigned by Gemini (v3) */
 
 /* =========================== */
 /*    IMPORTS & VARIABLES      */
@@ -177,26 +177,12 @@ body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   grid-column: span 4; /* Default card size */
 }
-
-/* Creative Layout Overrides */
-.effect-card:nth-child(1) {
-  grid-column: span 6;
-  grid-row: span 2;
-}
-
-.effect-card:nth-child(6) {
-  grid-column: span 6;
-}
-
-.effect-card:nth-child(7) {
-  grid-column: span 6;
-  grid-row: span 2;
-}
-
 .effect-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 0 15px var(--glow-color), 0 12px 40px rgba(0,0,0,0.6);
 }
+
+/* Layout Helper Classes (applied via 'layout' property in effects.json) */
 
 /* When a card's code popover is active, lift it above its siblings */
 .effect-card.is-active-popover {
@@ -205,22 +191,12 @@ body {
   overflow: visible; /* Allow popover to display outside the card's bounds */
 }
 
-/* Allow tooltip to overflow its preview container */
+/* Specific card overrides that aren't about grid layout */
+.effect-card[data-effect="profile-tooltip-button"] {
+  overflow: visible; /* Allow tooltip to show */
+}
 .effect-card[data-effect="profile-tooltip-button"] .card-preview {
   overflow: visible;
-}
-
-/* Give the tooltip card a wider slot and allow its tooltip to overflow */
-.effect-card[data-effect="profile-tooltip-button"] {
-  grid-column: span 7;
-  overflow: visible; /* Allow tooltip to show */
-  height: 580px; /* A bit taller than the default */
-}
-
-/* Style the neumorphic card to sit alongside the tooltip card */
-.effect-card[data-effect="neumorphic-expand-card"] {
-  grid-column: span 5;
-  height: 580px; /* Match the height of its neighbor */
 }
 
 .card-preview {
@@ -237,44 +213,11 @@ body {
 }
 
 .card-body {
-  padding: 1rem 1.5rem; /* Tweak vertical padding for better fit */
+  padding: 0.75rem 1.5rem; /* Reduced vertical padding */
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   flex-shrink: 0; /* Prevent body from being squished, ensuring content is visible */
-}
-.effect-title {
-  margin: 0 0 0.5rem 0;
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  color: #fff;
-}
-.effect-desc {
-  margin: 0 0 0.75rem 0;
-  line-height: 1.4; /* Tighter line-height for better fit */
-  color: var(--muted-text-color);
-  font-weight: 300;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit description to 2 lines */
-  -webkit-box-orient: vertical;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem; /* Tweak margin for better fit */
-}
-
-.tags .tag {
-  background: rgba(88, 166, 255, 0.1);
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--primary-accent);
-  border: 1px solid rgba(88, 166, 255, 0.2);
 }
 
 .card-actions {
@@ -282,7 +225,6 @@ body {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  margin-top: auto;
 }
 .card-actions .toggle-code {
   padding: 0.5rem 0.8rem;
@@ -329,6 +271,11 @@ body {
   transform: translateY(10px) scale(0.95);
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.code-display.align-right {
+  left: auto;
+  right: 0;
 }
 
 .code-display.visible {
